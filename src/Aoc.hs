@@ -1,4 +1,4 @@
 module Aoc where
 
 doAoc :: String
-doAoc = "Advent Of Code 2019"
+doAoc = "Advent Of Code 2020"

@@ -4,6 +4,8 @@
 result
 result-*
 
+data
+
 # haskell
 dist
 dist-newstyle

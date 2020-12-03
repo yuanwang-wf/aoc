@@ -1,6 +1,13 @@
 module Main where
 
-import Aoc
+import Criterion.Main
+import Day1
 
 main =
-  print $ "Hello from " ++ doAoc ++ "!"
+  defaultMain
+    [ bgroup
+        "two sum"
+        [ bench "set" $ nfIO solution,
+          bench "list com" $ nfIO solution'
+        ]
+    ]

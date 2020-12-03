@@ -2,13 +2,13 @@
 
 module Main where
 
+import Aoc
 import Hedgehog
 import Hedgehog.Main
-import Aoc
 
 prop_test :: Property
 prop_test = property $ do
-  doAoc === "Aoc"
+  doAoc === "Advent Of Code 2020"
 
 main :: IO ()
 main = defaultMain [checkParallel $$(discover)]
