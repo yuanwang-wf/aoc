@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | https://adventofcode.com/2020/day/2
-module Day2 where
+module Day2 (solution, solution') where
 
 import Control.Applicative (Alternative (many))
 import Data.Attoparsec.Text
@@ -17,7 +17,15 @@ import System.Directory (getCurrentDirectory)
 data PWRecord = PWRecord {c :: Char, minL :: Int, maxL :: Int, pw :: T.Text} deriving (Show)
 
 validPassword :: PWRecord -> Bool
-validPassword = undefined
+validPassword r = cnt >= (minL r) && cnt <= (maxL r)
+  where
+    cnt = T.foldr (\c' sum -> if c' == (c r) then sum + 1 else sum) 0 (pw r)
+
+validPassword' :: PWRecord -> Bool
+validPassword' (PWRecord c' l r w) = (f w l c') /= (f w r c')
+  where
+    f :: T.Text -> Int -> Char -> Bool
+    f t i c = if (i > T.length t) then False else (T.index t (i - 1)) == c
 
 parseRecord :: Parser PWRecord
 parseRecord =
@@ -31,17 +39,27 @@ parseRecord =
     pw <- takeText
     return $ PWRecord c minLength maxLength pw
 
-recordParser :: Parser [PWRecord]
-recordParser = many $ parseRecord <* endOfInput
+-- TODO implement this correctly
+--recordParser :: Parser [PWRecord]
+--recordParser = many $ parseRecord <* endOfInput
 
-test :: IO ()
-test = print $ parseOnly parseRecord "15-19 k: kkkkkkkkkkkkzkkkkkkk"
+--test :: IO ()
+--test = print . (fmap validPassword) $ parseOnly parseRecord "15-19 k: kkkkkkkkkkkkzkkkkkkk"
 
-test'' :: IO ()
-test'' = print $ parseOnly recordParser "15-19 k: kkkkkkkkkkkkzkkkkkkk\n15-19 k: kkkkkkkkkkkkzkkkkkkk\n"
-
-test' :: IO ()
-test' = do
+solution :: IO ()
+solution = do
   path <- getCurrentDirectory
   content <- TIO.readFile (path ++ "/data/day2.txt")
-  print $ map (parseOnly parseRecord) (T.lines content)
+  print $ foldr f (0 :: Int) $ map (fmap validPassword . parseOnly parseRecord) (T.lines content)
+  where
+    f (Right True) sum = sum + 1
+    f _ sum = sum
+
+solution' :: IO ()
+solution' = do
+  path <- getCurrentDirectory
+  content <- TIO.readFile (path ++ "/data/day2.txt")
+  print $ foldr f (0 :: Int) $ map (fmap validPassword' . parseOnly parseRecord) (T.lines content)
+  where
+    f (Right True) sum = sum + 1
+    f _ sum = sum
