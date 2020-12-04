@@ -9,7 +9,7 @@ import System.Directory (getCurrentDirectory)
 -- For example, suppose your expense report contained the following:
 
 -- we can implement this using list comp
--- but we can done with a loop
+-- TODO fix the bug, use index
 twoSum :: [Int] -> Int
 twoSum nums =
   head
