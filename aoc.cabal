@@ -16,6 +16,7 @@ library
   exposed-modules:     Aoc, Day1
   ghc-options:         -Wall -fno-warn-name-shadowing
   build-depends:       base >= 4.11 && < 5
+                     , attoparsec  
                      , containers  
                      , directory
 
