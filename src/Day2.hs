@@ -17,15 +17,15 @@ import System.Directory (getCurrentDirectory)
 data PWRecord = PWRecord {c :: Char, minL :: Int, maxL :: Int, pw :: T.Text} deriving (Show)
 
 validPassword :: PWRecord -> Bool
-validPassword r = cnt >= (minL r) && cnt <= (maxL r)
+validPassword r = cnt >= minL r && cnt <= maxL r
   where
-    cnt = T.foldr (\c' sum -> if c' == (c r) then sum + 1 else sum) 0 (pw r)
+    cnt = T.foldr (\c' sum -> if c' == c r then sum + 1 else sum) 0 (pw r)
 
 validPassword' :: PWRecord -> Bool
-validPassword' (PWRecord c' l r w) = (f w l c') /= (f w r c')
+validPassword' (PWRecord c' l r w) = f w l c' /= f w r c'
   where
     f :: T.Text -> Int -> Char -> Bool
-    f t i c = if (i > T.length t) then False else (T.index t (i - 1)) == c
+    f t i c = (i <= T.length t) && (T.index t (i - 1) == c)
 
 parseRecord :: Parser PWRecord
 parseRecord =
@@ -36,8 +36,7 @@ parseRecord =
     char ' '
     c <- anyChar
     string ": "
-    pw <- takeText
-    return $ PWRecord c minLength maxLength pw
+    PWRecord c minLength maxLength <$> takeText
 
 -- TODO implement this correctly
 --recordParser :: Parser [PWRecord]
@@ -50,7 +49,7 @@ solution :: IO ()
 solution = do
   path <- getCurrentDirectory
   content <- TIO.readFile (path ++ "/data/day2.txt")
-  print $ foldr f (0 :: Int) $ map (fmap validPassword . parseOnly parseRecord) (T.lines content)
+  print $ foldr (f . fmap validPassword . parseOnly parseRecord) (0 :: Int) (T.lines content)
   where
     f (Right True) sum = sum + 1
     f _ sum = sum
@@ -59,7 +58,7 @@ solution' :: IO ()
 solution' = do
   path <- getCurrentDirectory
   content <- TIO.readFile (path ++ "/data/day2.txt")
-  print $ foldr f (0 :: Int) $ map (fmap validPassword' . parseOnly parseRecord) (T.lines content)
+  print $ foldr (f . fmap validPassword' . parseOnly parseRecord) (0 :: Int) (T.lines content)
   where
     f (Right True) sum = sum + 1
     f _ sum = sum

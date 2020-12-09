@@ -13,7 +13,7 @@ import System.Directory (getCurrentDirectory)
 twoSum :: [Int] -> Int
 twoSum nums =
   head
-    [ (i * j) | i <- nums, j <- nums, i + j == 2020
+    [ i * j | i <- nums, j <- nums, i + j == 2020
     ]
 
 twoSum' :: [Int] -> Maybe Int
@@ -22,7 +22,7 @@ twoSum' nums = snd $ foldr f (Set.empty, Nothing :: Maybe Int) nums
     f :: Int -> (Set.Set Int, Maybe Int) -> (Set.Set Int, Maybe Int)
     f num (s, acum) = case acum of
       Just _ -> (s, acum)
-      Nothing -> if (Set.member (2020 - num) s) then (s, Just (num * (2020 - num))) else (Set.insert num s, Nothing)
+      Nothing -> if Set.member (2020 - num) s then (s, Just (num * (2020 - num))) else (Set.insert num s, Nothing)
 
 getInput :: IO [Int]
 getInput = do
@@ -42,6 +42,6 @@ solution' = do
 
 threeSum :: [Int] -> Int
 threeSum nums =
-  head [(i * j * k) | i <- nums, j <- nums, k <- nums, i + j + k == 2020]
+  head [i * j * k | i <- nums, j <- nums, k <- nums, i + j + k == 2020]
 
 -- TODO implement a better 3 sum
