@@ -1,8 +1,9 @@
 -- |
-module Day5 (partI) where
+module Day5 (partI, partII) where
 
 import Control.Applicative (liftA2)
 import Data.Char (digitToInt)
+import Data.List ((\\))
 import Data.Maybe (catMaybes, listToMaybe)
 import Numeric (readInt)
 import System.Directory (getCurrentDirectory)
@@ -30,8 +31,22 @@ seatId content = liftA2 (+) (fmap (* 8) . readBin . decodeRow $row) (readBin . d
 maxSeat :: [String] -> SeatId
 maxSeat = maximum . catMaybes . fmap seatId
 
+findSeat :: [String] -> SeatId
+findSeat input = head d
+  where
+    seats = catMaybes . fmap seatId $ input
+    l = minimum seats
+    h = maximum seats
+    d = [l .. h] \\ seats
+
 partI :: IO SeatId
 partI = do
   path <- getCurrentDirectory
   content <- readFile (path ++ "/data/day5.txt")
   return . maxSeat . lines $ content
+
+partII :: IO SeatId
+partII = do
+  path <- getCurrentDirectory
+  content <- readFile (path ++ "/data/day5.txt")
+  return . findSeat . lines $ content
