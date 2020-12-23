@@ -19,12 +19,13 @@ getGroupAnswer :: String -> Set.Set Char
 getGroupAnswer = foldr Set.insert Set.empty . join . lines
 
 getGroupAnswer' :: String -> Set.Set Char
-getGroupAnswer' = intersections . map (foldr Set.insert Set.empty) . lines
+getGroupAnswer' = foldl1 Set.intersection . map (foldr Set.insert Set.empty) . lines
 
-intersections :: Ord a => [Set.Set a] -> Set.Set a
-intersections [] = Set.empty
-intersections [x] = x
-intersections (x : y : xs) = Set.intersection x (intersections (y : xs))
+-- there is foldr1 foldl1
+--intersections :: Ord a => [Set.Set a] -> Set.Set a
+--intersections [] = Set.empty
+--intersections [x] = x
+--intersections (x : y : xs) = Set.intersection x (intersections (y : xs))
 
 partI :: IO Int
 partI = fmap (sum . (map (Set.size . getGroupAnswer))) getInput
